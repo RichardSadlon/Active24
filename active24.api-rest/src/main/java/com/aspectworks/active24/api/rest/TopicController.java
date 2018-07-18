@@ -52,4 +52,11 @@ public class TopicController {
     public List<Comment> getAllCommentsForTopic(@PathVariable("id") Long id) {
         return topicService.getAllComments(id);
     }
+
+
+    @RequestMapping(method=RequestMethod.DELETE, value="{id}")
+    public void deleteTopic(@PathVariable("id") Long id){
+        topicService.deleteTopic(id);
+    }
+
 }

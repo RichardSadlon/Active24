@@ -59,4 +59,12 @@ public class TopicServiceImpl implements TopicService {
         }
         return null;
     }
+
+    public void deleteTopic(Long id) {
+        for (int i = 0; i < topics.size(); i++) {
+            if (topics.get(i).equals(id)) {
+                topics.remove(i);
+            }
+        }
+    }
 }
