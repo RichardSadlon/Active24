@@ -14,7 +14,9 @@ public class TopicServiceImpl implements TopicService {
 
     public void addTopic(TopicEntity topic) {
         topic.setDate(new Date());
-        tr.save(topic);
+        if (tr.findByName(topic.getName()) == null) {
+            tr.save(topic);
+        }
     }
 
     public TopicEntity searchTopicByName(String name) {
@@ -29,7 +31,10 @@ public class TopicServiceImpl implements TopicService {
         List<TopicEntity> list = new ArrayList<>();
         if (sort.equals("yes")) {
             if (type.equals("date")) {
-                tr.findAll().sort(Comparator.comparing(o -> o.getDate()));
+                if(order.equals("asc"))
+                    tr.findAll().sort(Comparator.comparing(TopicEntity::getDate));
+                else
+                    tr.findAll().sort(Comparator.comparing(TopicEntity::getDate).reversed());
             } else if (type.equals("alphabetically")) {
                 if (order.equals("asc")) {
                     tr.findAll().sort(Comparator.comparing(TopicEntity::getName));
@@ -43,14 +48,14 @@ public class TopicServiceImpl implements TopicService {
 
 
     public void addComment(CommentVO comment, String name) {
-        TopicEntity topicEntity=tr.findByName(name);
+        TopicEntity topicEntity = tr.findByName(name);
         topicEntity.addComment(comment);
         tr.save(topicEntity);
 
     }
 
     public List<CommentVO> getAllComments(String name) {
-       return tr.findByName(name).getCommentVOS();
+        return tr.findByName(name).getCommentVOS();
     }
 
 
