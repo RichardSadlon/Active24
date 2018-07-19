@@ -1,55 +1,64 @@
 package com.aspectworks.active24.api.rest.vo;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
+@Entity
 public class TopicEntity {
-    private Long id;
-    private String tittle;
-    private List<Comment> comments;
+
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    private long id;
+    private String name;
     private Date date;
+    private String text;
 
-    public TopicEntity(Long id, String tittle) {
-        this.id = id;
-        this.tittle = tittle;
-        this.comments = new ArrayList<>();
+    @OneToMany(cascade=CascadeType.ALL)
+    List<CommentVO> commentVOS = new ArrayList<>();
+
+    public TopicEntity() {}
+
+    public TopicEntity(TopicVO topic) {
+        this.name = topic.getName();
+        this.date = topic.getDate();
+        this.text = topic.getText();
     }
 
-    public String getTittle() {
-        return tittle;
+    public String getName() {
+        return name;
     }
 
-    public void setTittle(String tittle) {
-        this.tittle = tittle;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Date getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setDate(Date dateCreated) {
+        this.date = dateCreated;
     }
 
-    public Long getId() {
-        return id;
+    public String getText() {
+        return text;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setText(String text) {
+        this.text = text;
+    }
+    public List<CommentVO> getCommentVOS() {
+        return commentVOS;
     }
 
-    public void addComment(Comment comment) {
-        comments.add(comment);
+    public void setCommentVOS(List<CommentVO> commentVOS) {
+        this.commentVOS = commentVOS;
     }
 
+    public void addComment(CommentVO comment) {
+        commentVOS.add(comment);
+    }
 }

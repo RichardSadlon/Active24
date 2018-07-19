@@ -1,27 +1,28 @@
 package com.aspectworks.active24.api.rest.vo;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.UUID;
 
 public class TopicVO {
-    private Long id;
-    private String tittle;
+
+    private String name;
     private Date date;
+    private String text;
 
-    public TopicVO(Long id, String tittle, Date date) {
-        this.id = id;
-        this.tittle = tittle;
-        this.date = date;
+    public TopicVO() {
     }
 
-    public String getTittle() {
-        return tittle;
+    public TopicVO(TopicEntity topicEntity) {
+        this.name = topicEntity.getName();
+        this.date = topicEntity.getDate();
+        this.text = topicEntity.getText();
     }
 
-    public void setTittle(String tittle) {
-        this.tittle = tittle;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Date getDate() {
@@ -32,12 +33,12 @@ public class TopicVO {
         this.date = date;
     }
 
-    public Long getId() {
-        return id;
+    public String getText() {
+        return text;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setText(String text) {
+        this.text = text;
     }
 
 }

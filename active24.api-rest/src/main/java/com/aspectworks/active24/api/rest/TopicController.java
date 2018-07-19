@@ -1,6 +1,6 @@
 package com.aspectworks.active24.api.rest;
 
-import com.aspectworks.active24.api.rest.vo.Comment;
+import com.aspectworks.active24.api.rest.vo.CommentVO;
 import com.aspectworks.active24.api.rest.vo.TopicVO;
 import com.aspectworks.active24.api.rest.vo.TopicEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,17 +18,21 @@ public class TopicController {
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public void addTopic(@RequestBody TopicVO topicVO) {
-        TopicEntity topicEntity = new TopicEntity(topicVO.getId(), topicVO.getTittle());
+        TopicEntity topicEntity = new TopicEntity(topicVO);
         topicService.addTopic(topicEntity);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/{text}")
-    public TopicVO searchTopicByText(@PathVariable("text") String text) {
-        System.out.println("Searching for topic which tittle contains " + text);
-        TopicEntity topicEntity = topicService.searchTopicByText(text);
-        return new TopicVO(topicEntity.getId(), topicEntity.getTittle(), topicEntity.getDate());
+    @RequestMapping(method = RequestMethod.GET, value = "/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public TopicVO searchTopicByName(@PathVariable("name") String name) {
+        System.out.println("Searching for topic which name contains " + name);
+        TopicEntity topicEntity = topicService.searchTopicByName(name);
+        return new TopicVO(topicEntity);
     }
 
+    @RequestMapping(method = RequestMethod.DELETE, value = "{name}")
+    public void deleteTopic(@PathVariable("name") String tittle) {
+        topicService.deleteTopic(tittle);
+    }
 
     @RequestMapping(method = RequestMethod.GET)
     public List<TopicVO> getAllTopics(@RequestParam(value = "sort", required = false) String sort,
@@ -38,25 +42,25 @@ public class TopicController {
         List<TopicVO> topics = new ArrayList<>();
         for (TopicEntity topicEntity :
                 topicEntities) {
-            topics.add(new TopicVO(topicEntity.getId(), topicEntity.getTittle(), topicEntity.getDate()));
+            topics.add(new TopicVO(topicEntity));
         }
         return topics;
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/{id}/comment", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void addComment(@RequestBody Comment comment, @PathVariable("id") Long id) {
-        topicService.addComment(comment, id);
-    }
-
-    @RequestMapping(method = RequestMethod.GET, value = "/{id}/comment", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Comment> getAllCommentsForTopic(@PathVariable("id") Long id) {
-        return topicService.getAllComments(id);
-    }
 
 
-    @RequestMapping(method=RequestMethod.DELETE, value="{id}")
-    public void deleteTopic(@PathVariable("id") Long id){
-        topicService.deleteTopic(id);
-    }
+        @RequestMapping(method = RequestMethod.POST, value = "/{name}/comment", consumes = MediaType.APPLICATION_JSON_VALUE)
+        public void addComment(@RequestBody CommentVO comment, @PathVariable("name") String name) {
+            topicService.addComment(comment, name);
+        }
+
+        @RequestMapping(method = RequestMethod.GET, value = "/{name}/comment", produces = MediaType.APPLICATION_JSON_VALUE)
+        public List<CommentVO> getAllCommentsForTopic(@PathVariable("name") String name) {
+            return topicService.getAllComments(name);
+        }
+
+
+
+
 
 }

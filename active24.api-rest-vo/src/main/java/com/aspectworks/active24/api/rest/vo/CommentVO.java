@@ -1,8 +1,15 @@
 package com.aspectworks.active24.api.rest.vo;
 
-public class Comment {
+import javax.persistence.*;
+
+@Entity
+public class CommentVO {
     String text;
     String userName;
+
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    private long id;
 
     public String getText() {
         return text;

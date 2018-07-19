@@ -1,70 +1,57 @@
 package com.aspectworks.active24.api.rest;
 
-import com.aspectworks.active24.api.rest.vo.Comment;
+import com.aspectworks.active24.api.rest.vo.CommentVO;
 import com.aspectworks.active24.api.rest.vo.TopicEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
 public class TopicServiceImpl implements TopicService {
-    List<TopicEntity> topics = new ArrayList<>();
+    @Autowired
+    private TopicRepository tr;
 
     public void addTopic(TopicEntity topic) {
         topic.setDate(new Date());
-        topics.add(topic);
+        tr.save(topic);
     }
 
-    public TopicEntity searchTopicByText(String text) {
-        for (TopicEntity topic : topics) {
-            if (topic.getTittle().contains(text)) {
-                return topic;
-            }
-        }
-        return null;
+    public TopicEntity searchTopicByName(String name) {
+        return tr.findByName(name);
+    }
+
+    public void deleteTopic(String name) {
+        tr.delete(tr.findByName(name));
     }
 
     public List<TopicEntity> getAllTopics(String sort, String type, String order) {
+        List<TopicEntity> list = new ArrayList<>();
         if (sort.equals("yes")) {
             if (type.equals("date")) {
-                topics.sort(Comparator.comparing(o -> o.getDate()));
+                tr.findAll().sort(Comparator.comparing(o -> o.getDate()));
             } else if (type.equals("alphabetically")) {
                 if (order.equals("asc")) {
-                    topics.sort(Comparator.comparing(TopicEntity::getTittle));
+                    tr.findAll().sort(Comparator.comparing(TopicEntity::getName));
                 } else { //desc
-                    topics.sort(Comparator.comparing(TopicEntity::getTittle).reversed());
+                    tr.findAll().sort(Comparator.comparing(TopicEntity::getName).reversed());
                 }
             }
         }
-        return topics;
+        return tr.findAll();
     }
 
-    public void addComment(Comment comment, Long id) {
-        for (TopicEntity topic :
-                topics) {
-            if (topic.getId().equals(id)) {
-                topic.addComment(comment);
-                System.out.println("comment was added");
-                return;
-            }
-        }
+
+    public void addComment(CommentVO comment, String name) {
+        TopicEntity topicEntity=tr.findByName(name);
+        topicEntity.addComment(comment);
+        tr.save(topicEntity);
+
     }
 
-    public List<Comment> getAllComments(Long id) {
-        for (TopicEntity topic :
-                topics) {
-            if (topic.getId().equals(id)) {
-                return topic.getComments();
-            }
-        }
-        return null;
+    public List<CommentVO> getAllComments(String name) {
+       return tr.findByName(name).getCommentVOS();
     }
 
-    public void deleteTopic(Long id) {
-        for (int i = 0; i < topics.size(); i++) {
-            if (topics.get(i).equals(id)) {
-                topics.remove(i);
-            }
-        }
-    }
+
 }

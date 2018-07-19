@@ -1,7 +1,6 @@
 package com.aspectworks.active24.api.rest.vo;
 
 public class UserVO {
-
     private String username;
     private String firstName;
     private String surname;
