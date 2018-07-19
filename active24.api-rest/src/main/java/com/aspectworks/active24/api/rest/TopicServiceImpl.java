@@ -12,6 +12,7 @@ public class TopicServiceImpl implements TopicService {
     @Autowired
     private TopicRepository tr;
 
+    @Override
     public void addTopic(TopicEntity topic) {
         topic.setDate(new Date());
         if (tr.findByName(topic.getName()) == null) {
@@ -19,41 +20,46 @@ public class TopicServiceImpl implements TopicService {
         }
     }
 
+    @Override
     public TopicEntity searchTopicByName(String name) {
         return tr.findByName(name);
     }
 
+    @Override
     public void deleteTopic(String name) {
         tr.delete(tr.findByName(name));
     }
 
+    @Override
     public List<TopicEntity> getAllTopics(String sort, String type, String order) {
-        List<TopicEntity> list = new ArrayList<>();
+        List<TopicEntity> topics=tr.findAll();
         if (sort.equals("yes")) {
             if (type.equals("date")) {
-                if(order.equals("asc"))
-                    tr.findAll().sort(Comparator.comparing(TopicEntity::getDate));
-                else
-                    tr.findAll().sort(Comparator.comparing(TopicEntity::getDate).reversed());
-            } else if (type.equals("alphabetically")) {
-                if (order.equals("asc")) {
-                    tr.findAll().sort(Comparator.comparing(TopicEntity::getName));
-                } else { //desc
-                    tr.findAll().sort(Comparator.comparing(TopicEntity::getName).reversed());
+                if (order.equals("desc")) {
+                    topics.sort(Comparator.comparing(TopicEntity::getDate).reversed());
+                } else { //by default asc
+                    topics.sort(Comparator.comparing(TopicEntity::getDate));
+                }
+            } else { //by default alphabetically
+                if (order.equals("desc")) {
+                    topics.sort(Comparator.comparing(TopicEntity::getName).reversed());
+                } else { //by default asc
+                    topics.sort(Comparator.comparing(TopicEntity::getName));
                 }
             }
         }
-        return tr.findAll();
+        return topics;
     }
 
 
+    @Override
     public void addComment(CommentVO comment, String name) {
         TopicEntity topicEntity = tr.findByName(name);
         topicEntity.addComment(comment);
         tr.save(topicEntity);
-
     }
 
+    @Override
     public List<CommentVO> getAllComments(String name) {
         return tr.findByName(name).getCommentVOS();
     }
