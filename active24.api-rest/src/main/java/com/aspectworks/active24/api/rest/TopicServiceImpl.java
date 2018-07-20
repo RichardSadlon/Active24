@@ -2,13 +2,18 @@ package com.aspectworks.active24.api.rest;
 
 import com.aspectworks.active24.api.rest.vo.CommentVO;
 import com.aspectworks.active24.api.rest.vo.TopicEntity;
+import io.swagger.annotations.Api;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 import java.util.*;
 
 @Service
 public class TopicServiceImpl implements TopicService {
+    final static Logger logger = LoggerFactory.getLogger(TopicController.class);
     @Autowired
     private TopicRepository tr;
 
@@ -17,6 +22,8 @@ public class TopicServiceImpl implements TopicService {
         topic.setDate(new Date());
         if (tr.findByName(topic.getName()) == null) {
             tr.save(topic);
+        }else{
+            logger.info("topic with the name "+topic.getName()+" is already in the database");
         }
     }
 
