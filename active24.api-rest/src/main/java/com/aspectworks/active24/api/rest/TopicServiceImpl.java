@@ -3,12 +3,16 @@ package com.aspectworks.active24.api.rest;
 import com.aspectworks.active24.api.rest.vo.CommentVO;
 import com.aspectworks.active24.api.rest.vo.TopicEntity;
 import io.swagger.annotations.Api;
+import org.ehcache.Cache;
+import org.ehcache.CacheManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 
+import java.security.acl.Owner;
 import java.util.*;
 
 @Service
@@ -22,8 +26,8 @@ public class TopicServiceImpl implements TopicService {
         topic.setDate(new Date());
         if (tr.findByName(topic.getName()) == null) {
             tr.save(topic);
-        }else{
-            logger.info("topic with the name "+topic.getName()+" is already in the database");
+        } else {
+            logger.info("topic with the name " + topic.getName() + " is already in the database");
         }
     }
 
@@ -39,7 +43,7 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     public List<TopicEntity> getAllTopics(String sort, String type, String order) {
-        List<TopicEntity> topics=tr.findAll();
+        List<TopicEntity> topics = tr.findAll();
         if (sort.equals("yes")) {
             if (type.equals("date")) {
                 if (order.equals("desc")) {
@@ -67,8 +71,11 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
+    @Cacheable("topicsSearch")
     public List<CommentVO> getAllComments(String name) {
+        System.out.println("fromDatabase");
         return tr.findByName(name).getCommentVOS();
+
     }
 
 

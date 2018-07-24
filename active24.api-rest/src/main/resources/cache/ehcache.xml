@@ -1,0 +1,21 @@
+<config
+        xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+        xmlns:jsr107='http://www.ehcache.org/v3/jsr107'
+        xmlns='http://www.ehcache.org/v3'
+        xsi:schemaLocation="
+            http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.1.xsd
+            http://www.ehcache.org/v3/jsr107 http://www.ehcache.org/schema/ehcache-107-ext-3.1.xsd">
+    <persistence directory="${user.home}/cache-data"/>
+
+    <cache alias="topicsSearch">
+        <key-type>String</key-type>
+        <value-type>Collection.class</value-type>
+        <expiry>
+            <ttl unit="seconds">60</ttl>
+        </expiry>
+        <resources>
+            <heap>10</heap>
+            <disk unit="GB">1</disk>
+        </resources>
+    </cache>
+</config>
