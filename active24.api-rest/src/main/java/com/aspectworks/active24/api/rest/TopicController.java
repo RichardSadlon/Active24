@@ -1,5 +1,6 @@
 package com.aspectworks.active24.api.rest;
 
+import com.aspectworks.active24.annotation.MaxRequestPerUserCount;
 import com.aspectworks.active24.api.rest.vo.CommentVO;
 import com.aspectworks.active24.api.rest.vo.TopicVO;
 import com.aspectworks.active24.api.rest.vo.TopicEntity;
@@ -7,6 +8,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 import org.hibernate.annotations.common.util.impl.LoggerFactory;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -26,9 +28,13 @@ public class TopicController {
     @Autowired
     TopicServiceImpl topicService;
 
+    final static Logger logger = org.slf4j.LoggerFactory.getLogger(TopicController.class);
+
+    @MaxRequestPerUserCount(11L)
     @ApiOperation(value="add topic")
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public void addTopic(@RequestBody TopicVO topicVO) {
+        logger.info("addTopic called");
         TopicEntity topicEntity = new TopicEntity(topicVO);
         topicService.addTopic(topicEntity);
     }
