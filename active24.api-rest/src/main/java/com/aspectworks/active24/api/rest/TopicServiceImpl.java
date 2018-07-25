@@ -71,11 +71,10 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    @Cacheable("topicsSearch")
+ //   @Cacheable("topicsSearch")
     public List<CommentVO> getAllComments(String name) {
         System.out.println("fromDatabase");
         return tr.findByName(name).getCommentVOS();
-
     }
 
 
